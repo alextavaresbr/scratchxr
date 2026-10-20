@@ -285,9 +285,6 @@ async def check_phone_viewer(page,section):
         await page.set_viewport_size({"width":844,"height":390})
         await check_viewer_bounds(page)
         await page.keyboard.press("Tab")
-        if section=="#step-5":
-            await expect(page.locator(".viewer-microphone")).to_be_focused()
-            await page.keyboard.press("Tab")
         await expect(page.get_by_role("button",name="Alinhar imagens",exact=True)).to_be_focused()
         await page.keyboard.press("Enter")
         await expect(page.get_by_role("slider",name="Alinhamento das imagens")).to_be_visible()

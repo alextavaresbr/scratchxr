@@ -84,16 +84,31 @@ async def check(browser_type):
         await page.evaluate("window.__blockAudio=true")
         await page.locator(".chat-input input").fill("Teste de permissão")
         await page.locator(".send-button").click()
-        await expect(page.get_by_role("button",name="Ativar áudio",exact=True)).to_be_visible(timeout=12000)
+        await expect(page.locator(".chat-audio-enable")).to_be_visible(timeout=12000)
         await page.evaluate("window.__blockAudio=false")
-        await page.get_by_role("button",name="Ativar áudio",exact=True).click()
+        await page.locator(".chat-audio-enable").click()
         await page.wait_for_function("window.__voiceStarts===1")
-        await expect(page.get_by_role("button",name="Ativar áudio",exact=True)).to_have_count(0)
+        await expect(page.locator(".chat-audio-enable")).to_have_count(0)
         await page.wait_for_timeout(6000)
         assert await page.evaluate("window.__systemVoices")==0
+        # Enable and recover audio before entering Cardboard.
+        await page.locator(".conversation-mic").click()
+        await page.wait_for_function("window.__streams.length===1")
+        await page.evaluate("window.__blockAudio=true;window.__contexts.forEach(c=>c.dispatchEvent(new Event('statechange')))")
+        await expect(page.locator(".conversation-mic")).to_have_attribute("aria-label","Ativar áudio")
+        await page.evaluate("window.__blockAudio=false")
+        await page.locator(".conversation-mic").click()
+        await expect(page.locator(".conversation-mic")).to_have_attribute("aria-label","Desligar microfone")
+        assert await page.evaluate("window.__streams.length===1&&window.__streams[0].getTracks().every(t=>t.readyState==='live')")
 
     await page.get_by_role("button",name="Visor de celular",exact=True).click()
     if supports_audio:await page.wait_for_function("window.__streams.length===1")
+    await expect(page.locator(".viewer-tracking,.viewer-microphone")).to_have_count(0)
+    for name in ["Sair do visor","Alinhar imagens"]:
+        control=page.get_by_role("button",name=name,exact=True)
+        await expect(control).to_have_text("")
+        assert await control.evaluate("el=>el.offsetWidth===44&&el.offsetHeight===44")
+    await expect(page.locator(".stereo-active button:visible")).to_have_count(2)
     canvas=page.locator(".stereo-active .world-canvas canvas")
     await expect(page.locator("body>.stereo-active,body>div>.stereo-active")).to_have_count(1)
     for width,height in [(390,844),(844,390),(844,320)]:
@@ -103,14 +118,9 @@ async def check(browser_type):
           return Math.abs(r.width-v.width)<1&&Math.abs(r.height-v.height)<1&&Math.abs(r.left-v.offsetLeft)<1&&Math.abs(r.top-v.offsetTop)<1;
         }""")
     await page.screenshot(path=str(ROOT/f".cache/viewer-{browser_type.name}.png"))
-    # Resuming an interrupted context must not toggle the active microphone off.
-    if supports_audio:
-        await page.evaluate("window.__blockAudio=true;window.__contexts.forEach(c=>c.dispatchEvent(new Event('statechange')))")
-        await expect(page.locator(".viewer-microphone")).to_have_text("Ativar áudio")
-        await page.evaluate("window.__blockAudio=false")
-        await page.locator(".viewer-microphone").click()
-        await expect(page.locator(".viewer-microphone")).to_have_text("Microfone ligado")
-        assert await page.evaluate("window.__streams.length===1&&window.__streams[0].getTracks().every(t=>t.readyState==='live')")
+    await page.get_by_role("button",name="Alinhar imagens",exact=True).click()
+    await expect(page.get_by_role("slider",name="Alinhamento das imagens")).to_be_visible()
+    await page.get_by_role("button",name="Alinhar imagens",exact=True).click()
     await page.get_by_role("button",name="Sair do visor",exact=True).click()
     await expect(page.locator(".conversation-world .world-panel")).to_have_count(1)
     if supports_audio:assert await page.evaluate("window.__streams[0].getTracks().every(t=>t.readyState==='ended')")

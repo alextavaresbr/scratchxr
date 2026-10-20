@@ -27,7 +27,7 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
   const helpId=useId(),helpButton=useRef<HTMLButtonElement>(null);
   const previousTrace=useRef(trace);
   const [support,setSupport]=useState({ar:false,vr:false}),[stereo,setStereo]=useState(false);
-  const [tracking,setTracking]=useState<PhoneTrackingStatus>('loading');
+  const [tracking,setTracking]=useState<PhoneTrackingStatus>();
   const [aligning,setAligning]=useState(false);
   const [alignment,setAlignment]=useState(()=>{
     const saved=localStorage.getItem('scratchxr-viewer-alignment'),value=saved===null?90/844:Number(saved);
@@ -194,21 +194,19 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
   return <><div ref={inlineMount} className="viewer-mount"/>{createPortal(<div ref={panel} className={`world-panel ${stage?'unified-stage':''} ${show3D?'showing-3d':'showing-2d'} ${stereo?'stereo-active':''}`} role={stereo?'dialog':undefined} aria-modal={stereo?true:undefined} aria-label={stereo?text(locale,'Visor de celular','Phone viewer'):undefined}>
     <div className="world-toolbar"><span className="live-dot"/><span>{stage?text(locale,'Palco','Stage'):conversation?text(locale,'Uma conversa no seu mundo','A conversation in your world'):text(locale,'Seu programa ganhou espaço','Your program has room to move')}</span>
       {!stage&&replayControls}
-      {conversation&&<button className={`icon-button conversation-mic ${voicePhase!=='off'&&voicePhase!=='error'?'active':''}`} aria-label={voicePhase==='off'||voicePhase==='error'?text(locale,'Ligar microfone','Turn microphone on'):text(locale,'Desligar microfone','Turn microphone off')} onClick={()=>onXRVoice?.('question')}>{voicePhase==='off'||voicePhase==='error'?<MicOff size={18}/>:<Mic size={18}/>}</button>}
+      {conversation&&<button className={`icon-button conversation-mic ${voicePhase!=='off'&&voicePhase!=='error'?'active':''}`} aria-pressed={voicePhase!=='off'&&voicePhase!=='error'} aria-label={voicePhase==='audio-blocked'?text(locale,'Ativar áudio','Enable audio'):voicePhase==='off'||voicePhase==='error'?text(locale,'Ligar microfone','Turn microphone on'):text(locale,'Desligar microfone','Turn microphone off')} onClick={()=>onXRVoice?.('question')}>{voicePhase==='off'||voicePhase==='error'?<MicOff size={18}/>:<Mic size={18}/>}</button>}
       <button ref={helpButton} className="icon-button viewer-help-button" aria-label={text(locale,'Ajuda do palco','Stage help')} aria-expanded={help} aria-controls={helpId} onClick={()=>setHelp(value=>!value)}><HelpCircle size={18}/></button>
     </div>
     <div className="stage-surface">
       {stage&&<div className="stage-2d" hidden={show3D}>{stage}</div>}
       <div ref={host} className="world-canvas" hidden={!show3D}/>
     </div>
-    {stereo&&<button ref={exitButton} className="viewer-exit" onClick={closeViewer}><X size={20}/>{text(locale,'Sair do visor','Exit viewer')}</button>}
-    {stereo&&conversation&&<button className="viewer-microphone" onClick={()=>onXRVoice?.('question')}><Mic size={16}/>{voicePhase==='audio-blocked'?text(locale,'Ativar áudio','Enable audio'):voicePhase==='off'||voicePhase==='error'?text(locale,'Ligar microfone','Turn microphone on'):text(locale,'Microfone ligado','Microphone on')}</button>}
-    {stereo&&<button className="viewer-align-toggle" aria-expanded={aligning} onClick={()=>setAligning(value=>!value)}><SlidersHorizontal size={18}/>{text(locale,'Alinhar imagens','Align images')}</button>}
+    {stereo&&<button ref={exitButton} className="viewer-exit" aria-label={text(locale,'Sair do visor','Exit viewer')} onClick={closeViewer}><X size={20} aria-hidden="true"/></button>}
+    {stereo&&<button className="viewer-align-toggle" aria-label={text(locale,'Alinhar imagens','Align images')} aria-expanded={aligning} onClick={()=>setAligning(value=>!value)}><SlidersHorizontal size={20} aria-hidden="true"/></button>}
     {stereo&&aligning&&<div className="viewer-alignment"><label>{text(locale,'Ajuste até unir as duas imagens no visor.','Adjust until the two images merge in the viewer.')}
       <input aria-label={text(locale,'Alinhamento das imagens','Image alignment')} type="range" min={-.2} max={.2} step={.002} value={alignment} onChange={event=>{
         const value=Number(event.target.value);setAlignment(value);world.current?.setStereoAlignment(value);localStorage.setItem('scratchxr-viewer-alignment',String(value));
       }}/></label></div>}
-    {stereo&&<p className={`viewer-tracking ${tracking==='tracking'?'tracking-ready':''}`} role="status">{text(locale,...trackingMessages[tracking])}</p>}
     {show3D&&bubble&&<div className="world-bubble" aria-live="polite">{bubble}</div>}
     <div className="stage-controls"><div className="xr-controls">
       {stage&&<button className="stage-mode-button" disabled={busy} aria-pressed={show3D} title={show3D?text(locale,'Voltar ao 2D','Return to 2D'):text(locale,'Ver em 3D','View in 3D')} onClick={toggle3D}><Box size={18}/>3D</button>}
@@ -219,6 +217,7 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
     </div>{stage&&<div className="stage-playback">{show3D?replayControls:stageActions}</div>}</div>
     {error&&<p className="notice" role="alert">{error}</p>}
     {help&&<aside id={helpId} className="viewer-help"><p className="compatibility">{text(locale,'AR e VR aparecem quando o navegador e o dispositivo oferecem suporte. Em AR, toque no chão para colocar o cenário. Para acompanhar seus deslocamentos no visor de celular, permita câmera e sensores. A câmera traseira deve ficar descoberta.','AR and VR are enabled when your browser and device support them. In AR, tap the floor to place the scene. To track your position in the phone viewer, allow the camera and sensors. Keep the rear camera uncovered.')}</p>{!conversation&&<p>{text(locale,'No 3D, arraste para explorar e role para aproximar.','In 3D, drag to explore and scroll to zoom.')}{stage&&text(locale,' Clique novamente em 3D para voltar ao palco 2D.',' Click 3D again to return to the 2D stage.')}</p>}
+      {tracking&&<p role="status">{text(locale,...trackingMessages[tracking])}</p>}
       {stage&&<div className="mini-challenge"><span>✦ {text(locale,'EXPERIMENTE','TRY THIS')}</span><p>{text(locale,'No bloco “deslize”, mude 2 para 1. O destino mudou ou só a velocidade?','In the “glide” block, change 2 to 1. Did the destination change, or just the speed?')}</p></div>}
     </aside>}
     <p className="tracking-credit"><a href="/xr8/LICENSE" target="_blank" rel="noreferrer">{text(locale,'Licença e isenção de garantias','License and warranty disclaimer')}</a></p>

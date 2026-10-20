@@ -43,8 +43,9 @@ Uma interrupção mantém a voz decodificada pendente até “Ativar áudio”;
 esse botão retoma o contexto sem desligar o microfone. Durante a resposta,
 o track fica aberto sem reiniciar o MediaRecorder repetidamente.
 O formato enviado à transcrição prioriza MP4 e aceita WebM conforme o navegador.
-Saída, erro e permissões tardias encerram os tracks; o indicador e o botão
-de microfone ficam disponíveis na web, no Cardboard e no painel XR.
+Saída, erro e permissões tardias encerram os tracks. O controle do microfone
+fica na visualização normal, antes de entrar no Cardboard, e no painel XR.
+No Cardboard, a escuta continua sem botão de microfone sobreposto.
 `python tools/check-voice.py` verifica texto, captura e ciclo de vida com
 microfone sintético; testes acústicos no iPhone e Quest continuam necessários.
 `python tools/check-safari.py` confere viewport e rolagem em WebKit/Chromium,
@@ -179,6 +180,8 @@ da seção. Suas dimensões acompanham o `visualViewport`, inclusive ao fechar
 o teclado ou girar o aparelho; a saída devolve o canvas ao lugar original.
 Sem sensores, a exploração por arraste continua disponível. O botão
 “Sair do visor”, Escape e a saída nativa restauram a apresentação normal.
+O visor exibe somente os ícones de fechar e alinhar imagens; as mensagens
+de rastreamento ficam na ajuda da visualização normal.
 Isso vale tanto para o resultado 3D quanto para o avatar do diálogo.
 O estéreo calcula a perspectiva pela área exibida e a divisão pelo buffer real.
 O alinhamento inicial das lentes reaproveita o ajuste do iPhone 12 no Logvesp

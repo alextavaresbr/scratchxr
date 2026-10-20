@@ -94,9 +94,11 @@ async def main():
         await page.route("**/api/chat", chat)
         await page.route("**/api/stt", stt)
         panel = page.locator("#step-5 .world-panel")
+        await panel.locator(".conversation-mic").click()
+        await expect(panel.locator(".conversation-mic")).to_have_attribute("aria-pressed","true")
         await panel.get_by_role("button", name="Visor de celular", exact=True).click()
         await page.wait_for_function("window.__micStreams.length===1")
-        await expect(page.locator(".viewer-microphone")).to_have_text("Microfone ligado")
+        await expect(page.locator(".viewer-microphone")).to_have_count(0)
         await page.wait_for_timeout(1300)
         assert not stt_calls, "Silence was uploaded"
         for turn in range(2):
@@ -142,7 +144,7 @@ async def main():
         await page.evaluate("window.__pendingMic=false;window.__denyMic=true")
         await panel.get_by_role("button", name="Visor de celular", exact=True).click()
         await expect(page.locator(".chat-notice")).to_contain_text("Confira a permissão")
-        await expect(page.locator(".viewer-microphone")).to_have_text("Ligar microfone")
+        await expect(page.locator(".stereo-active .conversation-mic")).to_have_attribute("aria-pressed","false")
         await page.get_by_role("button", name="Sair do visor").click()
         assert not errors, errors
         print("VR lifecycle, cancelled requests, late permissions and denial passed", flush=True)

@@ -22,6 +22,9 @@ Instruções em [site/README.md](site/README.md).
   preservando o canvas ao entrar e sair. “Ver meu movimento” rola até
   o avatar automaticamente. Permissões e áudio acústico no iPhone físico
   ainda precisam de conferência.
+- A tela do Cardboard mantém apenas os ícones de fechar e alinhar imagens.
+  Avisos de rastreamento ficam na ajuda, fora do visor. O microfone pode ser
+  ativado na visualização normal antes de entrar; seu botão não cobre a cena.
 - Validação local: build, 30 testes unitários, percurso completo nos três
   cenários e conversa com duas falas automáticas passaram. Viewport e
   retorno ao avatar passaram em WebKit/Chromium; a recuperação de áudio
@@ -168,7 +171,7 @@ Instruções em [site/README.md](site/README.md).
   Na conversa imersiva o microfone começa ao entrar, mediante permissão,
   envia a fala após um segundo de pausa e retoma após a resposta.
   A captura para ao sair/desligar; áudio do próprio tutor é descartado.
-  Há indicador e botão no visor e no painel XR. Respostas atrasadas de uma
+  Há controles na visualização normal e no painel XR. Respostas atrasadas de uma
   captura encerrada são ignoradas. O áudio web é liberado no clique.
   Os 15 visemas existem, mas a animação atual da boca é aproximada, sem
   alinhamento completo com os fonemas do áudio.
