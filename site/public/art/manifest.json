@@ -1,0 +1,114 @@
+{
+  "project": "ScratchXR",
+  "date": "2026-10-20",
+  "tool": "Built-in image_gen.imagegen",
+  "mode": "built-in; no API or CLI fallback",
+  "palette": {
+    "ink": "#28233F",
+    "violet": "#7662E8",
+    "tangerine": "#FF8B59",
+    "mint": "#A7DCCD",
+    "paper": "#FBF8F1",
+    "yellow": "#F7CF63"
+  },
+  "notes": [
+    "Every final artifact copied into this workspace; source originals left in CODEX_HOME/generated_images.",
+    "Generated PNG images inspected visually and dimensions/channels verified with Pillow. The US flag is a separate native SVG interface asset.",
+    "Educational infographic labels and instructions belong in accessible bilingual HTML, not baked into the images.",
+    "Generated illustrations are decorative teaching aids; exact Scratch behavior is defined by the interactive editor."
+  ],
+  "assets": [
+    {
+      "file": "scratchxr-logo.png",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGBA",
+      "alphaVerified": true,
+      "prompt": "Use case: logo-brand.\nAsset type: transparent horizontal logo PNG for ScratchXR, an educational web experience on computational thinking and mixed reality for ages 10–16.\nPrimary request: Create a polished friendly wordmark, exact text \"ScratchXR\", letter-by-letter S c r a t c h X R, paired with a compact abstract symbol on the left. The symbol is two interlocking coding-block shapes becoming a dimensional square portal, clearly readable at small size.\nStyle: crisp geometric graphic design, solid colored areas, no outlines, restrained dimensional facets in the symbol, carefully drawn rounded geometric sans-serif lettering.\nComposition: one centered horizontal logo, symbol left and wordmark right, generous transparent padding, no repeated variants, wide image.\nColor palette: deep violet ink #28233F for Scratch, saturated violet #7662E8 for XR, tangerine #FF8B59 and pale mint #A7DCCD for parts of the symbol.\nConstraints: genuine transparent alpha background, sharp legible edges, only the exact text \"ScratchXR\", no tagline, no gradients, no shadows, no mockup, no copyrighted mascot, no cats, no existing game characters, no frames.",
+      "alt": {
+        "pt": "ScratchXR",
+        "en": "ScratchXR"
+      },
+      "review": "Exact wordmark checked; actual alpha channel verified.",
+      "source": "C:\\Users\\alexa\\.codex\\generated_images\\01a157f5-f56a-7bb2-a658-1432a728d802\\exec-5c88782c-8b85-412c-803d-ee7a73f9ba36.png",
+      "workspacePath": "E:/zengine/ScratchXR/site/public/art/scratchxr-logo.png"
+    },
+    {
+      "file": "computational-thinking.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "prompt": "Use case: scientific-educational.\nAsset type: wide text-free educational infographic for ScratchXR computational thinking.\nPrimary request: a single beautiful horizontal isometric illustration with four clearly separated connected stations read from left to right: (1) DECOMPOSITION visually represented by one geometric building separating into four simple colored components, (2) PATTERN RECOGNITION shown as a tidy repeating sequence of alternating cubes and arches with the repeated group visually highlighted by a pale platform, (3) ABSTRACTION shown as a richly detailed tiny tree simplified into a minimal geometric tree silhouette beside it, (4) ALGORITHM shown as a visible sequence of three interlocking coding puzzle blocks leading along a stepped path to a small flag. Convey these four concepts through objects only; absolutely no words, letters, digits or labels.\nStyle/medium: modern isometric flat illustration made from solid shapes, no outlines or strokes, consistent 30 degree isometric view, sophisticated playful classroom editorial illustration for ages 10–16.\nComposition: wide 16:9, four stations have equivalent weight in a clear row connected by a simple pale curved route, objects large and uncluttered with ample margins and blank space above each station so the website can overlay labels separately.\nPalette: warm off-white background #FBF8F1; deep violet ink #28233F; saturated violet #7662E8; tangerine #FF8B59; mint #A7DCCD; a little yellow #F7CF63.\nConstraints: no text of any kind, no characters, no outlines, no photorealism, no interface screenshot, no panel borders, no logos. The conceptual reading must remain clear and inviting.",
+      "alt": {
+        "pt": "Quatro etapas do pensamento computacional: decompor uma construção, identificar padrões, simplificar uma árvore e ordenar passos até uma meta.",
+        "en": "Four computational thinking concepts: decompose a building, recognize patterns, simplify a tree, and order steps toward a goal."
+      },
+      "review": "Text-free composition checked; four left-to-right conceptual stations. Labels should be HTML and localized.",
+      "source": "C:\\Users\\alexa\\.codex\\generated_images\\01a157f5-f56a-7bb2-a658-1432a728d802\\exec-48a02c69-8659-436e-b251-9deb9d7eaec7.png",
+      "workspacePath": "E:/zengine/ScratchXR/site/public/art/computational-thinking.png"
+    },
+    {
+      "file": "blocks-to-world.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "prompt": "Use case: scientific-educational.\nAsset type: wide text-free educational infographic for ScratchXR programming with blocks.\nPrimary request: one horizontal isometric flat illustration explaining visual programming. On the left, three generously sized colorful interlocking horizontal coding blocks are neatly stacked, one hat-shaped start block in warm yellow and two command blocks in violet and tangerine; only simple pictographic play, arrow, and turn symbols with NO lettering. In the center, a simple dotted sequence of solid small geometric tiles carries the programmed action from the block stack toward the right. On the right, a small original generic anime-inspired youthful VRoid-style human student avatar with short neutral brown hair, mint jacket, dark pants and simple shoes walks on a broad green isometric ground plane among one low-poly tree and a tiny pavilion; a smooth arc of three orange step markers illustrates its path. This is a visual metaphor for code driving a scene, not an actual interface screenshot.\nStyle/medium: modern isometric flat illustration, clean solid colored surfaces, NO outlines or strokes, consistent 30 degree perspective, polished educational editorial graphic for ages 10–16. The avatar is minimal and generic, not from any franchise.\nComposition: wide 16:9 with blocks on left, connection in middle, scene on right, balanced negative space and generous margins. Build one cohesive composition.\nPalette: warm off-white background #FBF8F1; deep violet ink #28233F; saturated violet #7662E8; tangerine #FF8B59; mint #A7DCCD; yellow #F7CF63.\nConstraints: absolutely no written text, letters, digits or labels; no logos; no cats; no Chrono Trigger or any existing game characters; no outlined comic style; no photorealism; no device frame; no UI controls.",
+      "alt": {
+        "pt": "Blocos de programação conectados a um personagem caminhando por um cenário com árvore e construção.",
+        "en": "Programming blocks connected to a character walking through a scene with a tree and pavilion."
+      },
+      "review": "No words or copyrighted characters; generic avatar is an illustration, not a production VRoid model.",
+      "source": "C:\\Users\\alexa\\.codex\\generated_images\\01a157f5-f56a-7bb2-a658-1432a728d802\\exec-043d09aa-dccc-4eab-b7d6-93241f3cd3e8.png",
+      "workspacePath": "E:/zengine/ScratchXR/site/public/art/blocks-to-world.png"
+    },
+    {
+      "file": "flag-br.png",
+      "width": 1498,
+      "height": 1050,
+      "mode": "RGB",
+      "prompt": "Use case: logo-brand. Create a clean flat graphic icon of the Brazilian national flag with a completely opaque, perfectly solid green rectangle filling the ENTIRE image canvas edge to edge, with no margin, border, rounding or transparency. The accurate yellow rhombus is centered and the blue globe lies within it; white curved band has small green motto exactly \"ORDEM E PROGRESSO\" and the globe has small white stars. Render as a simple 2D flat national flag graphic, not a photo. Use uniform solid colors only. No gradients, shadows, texture, grain, fabric, highlights, mottled surfaces, dark spots, blemishes, decorations or distressed effects. Horizontal rectangle 10:7 ratio. This is a small icon for a language selector.",
+      "alt": {
+        "pt": "Português do Brasil",
+        "en": "Brazilian Portuguese"
+      },
+      "review": "Clean opaque final chosen over two discarded alpha versions; motto checked. Stylized language icon, not a reference specification of flag construction.",
+      "source": "C:\\Users\\alexa\\.codex\\generated_images\\01a157f5-f56a-7bb2-a658-1432a728d802\\exec-5c8e92eb-108a-4940-9b47-8a72660d9ad7.png",
+      "workspacePath": "E:/zengine/ScratchXR/site/public/art/flag-br.png"
+    },
+    {
+      "file": "flag-en.png",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alphaVerified": true,
+      "prompt": "Use case: logo-brand. Asset type: transparent language-selector flag icon for an educational website. Primary request: one crisp accurate flat United Kingdom Union Jack flag, rectangular 2:1 aspect ratio, with very gently rounded outer corners. Preserve accurate orientation and asymmetry of the diagonal red saltire, deep blue ground, white and red crosses. Style: minimal flat graphic, no outlines, no shadows, no waving fabric, no border, no card or container. Composition: isolated centered flag taking up about 90 percent of a horizontal transparent canvas. Constraints: genuine transparent alpha background, sharp edges, one flag only, no text or word labels.",
+      "alt": {
+        "pt": "English",
+        "en": "English"
+      },
+      "review": "Previous language icon, replaced in the interface by flag-us.svg at the user's request.",
+      "source": "C:\\Users\\alexa\\.codex\\generated_images\\01a157f5-f56a-7bb2-a658-1432a728d802\\exec-94659294-89d5-4c71-945c-261b78209db9.png",
+      "workspacePath": "E:/zengine/ScratchXR/site/public/art/flag-en.png"
+    },
+    {
+      "file": "flag-us.svg",
+      "mode": "SVG",
+      "source": "Native vector interface asset: thirteen stripes and fifty stars.",
+      "alt": {"pt": "Estados Unidos", "en": "United States"},
+      "review": "Used with visible ENGLISH/EUA text and in the active-language toggle.",
+      "workspacePath": "E:/zengine/ScratchXR/site/public/art/flag-us.svg"
+    }
+  ],
+  "discardedFlagIterations": [
+    {
+      "prompt": "Use case: logo-brand. Asset type: transparent language-selector country flag icon for an educational website. Primary request: one crisp accurate flat Brazil national flag, rectangular 10:7 aspect ratio, with very gently rounded outer corners. Green field, centered yellow rhombus, dark blue globe with accurate recognizable white curved band and tiny white stars. If text in the band is too small it may be simply represented as fine marks; no external text. Style: minimal flat graphic, no outlines, no shadows, no waving fabric, no border, no card or container. Composition: isolated centered flag taking up about 90 percent of a horizontal transparent canvas. Constraints: genuine transparent alpha background, sharp edges, one flag only, no word labels.",
+      "source": "C:\\Users\\alexa\\.codex\\generated_images\\01a157f5-f56a-7bb2-a658-1432a728d802\\exec-7d3cf7cb-e5b8-4631-af6f-25baaadcf061.png",
+      "reason": "Alpha background caused dark translucent marks and band used stars instead of motto."
+    },
+    {
+      "prompt": "Use case: precise-object-edit. Edit target: the attached generated Brazil flag icon. Make the green field completely uniform flat green: remove every dark mark, mottled region, stain and swirl. Replace the row of green star shapes in the white band with the accurate tiny green motto \"ORDEM E PROGRESSO\" curved along the band. Preserve the rounded rectangular overall flag, yellow rhombus, blue globe, white stars, overall framing and genuinely transparent background. Flat national flag icon only, no fabric texture, no gradients, no shading or shadows. Keep edges sharp.",
+      "reason": "Motto corrected but alpha artifacts persisted; regenerated as opaque flag."
+    }
+  ]
+}
+

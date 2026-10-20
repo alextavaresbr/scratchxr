@@ -1,0 +1,21 @@
+**/node_modules/
+**/build/
+**/build-server/
+**/dist/
+**/.cache/
+**/.vite/
+**/__pycache__/
+*.pyc
+*.log
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+.DS_Store
+Thumbs.db
+# Acervos e referências que não participam da distribuição.
+materiais/arquivo-poly-pizza/
+Utilizados/v1/
+Utilizados/v2/
+*.zip

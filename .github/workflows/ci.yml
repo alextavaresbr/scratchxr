@@ -1,0 +1,35 @@
+name: Build and test
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Build production image and verify HTTP
+        working-directory: .
+        run: |
+          docker build -t scratchxr:ci .
+          docker run -d --name scratchxr-ci -e PORT=3000 -p 3000:3000 scratchxr:ci
+          trap 'docker logs scratchxr-ci; docker rm -f scratchxr-ci' EXIT
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://localhost:3000/api/health; then break; fi
+            sleep 1
+          done
+          curl -fsS http://localhost:3000/ | grep -q ScratchXR
+          curl -fsS http://localhost:3000/avatars/avatar-a.glb -o /dev/null

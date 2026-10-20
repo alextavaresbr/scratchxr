@@ -1,0 +1,14 @@
+**
+!site/
+!site/**
+site/node_modules/
+site/build/
+site/build-server/
+site/dist/
+site/.cache/
+site/.vite/
+site/.env
+site/.env.*
+site/**/__pycache__/
+site/**/*.pyc
+site/**/*.log

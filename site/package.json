@@ -1,0 +1,43 @@
+{
+  "name": "scratchxr",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 4310",
+    "build": "tsc --noEmit && vite build && esbuild src/production.ts --bundle --platform=node --format=esm --target=node24 --outfile=build-server/server.mjs",
+    "start": "node build-server/server.mjs",
+    "preview": "vite preview --host 0.0.0.0 --port 4311",
+    "test": "vitest run",
+    "prepare:assets": "node tools/prepare-assets.mjs"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "dependencies": {
+    "@8thwall/engine-binary": "1.0.0",
+    "@scratch/scratch-render": "15.2.0",
+    "@scratch/scratch-storage": "15.2.0",
+    "@scratch/scratch-svg-renderer": "15.2.0",
+    "@scratch/scratch-vm": "15.2.0",
+    "events": "^3.3.0",
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "scratch-audio": "^2.0.271",
+    "scratch-blocks": "2.1.35",
+    "three": "^0.182.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.0",
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.182.0",
+    "@vitejs/plugin-basic-ssl": "^2.2.0",
+    "@vitejs/plugin-react": "^5.1.3",
+    "esbuild": "0.28.2",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4",
+    "vitest": "^4.0.0"
+  }
+}
