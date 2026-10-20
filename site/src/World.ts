@@ -183,7 +183,7 @@ export class World {
     this.tutorText=caption;const ctx=this.tutorCanvas.getContext('2d')!;
     ctx.clearRect(0,0,1024,480);ctx.fillStyle='#fbf8ffff';ctx.beginPath();ctx.roundRect(0,0,1024,480,30);ctx.fill();
     ctx.fillStyle='#7250cf';ctx.font='600 25px sans-serif';ctx.fillText('ScratchXR',40,50);
-    const labels:Record<VoicePhase,[string,string]>={off:['Microfone desligado','Microphone off'],starting:['Abrindo microfone…','Opening microphone…'],listening:['Microfone ligado · Estou ouvindo','Microphone on · Listening'],transcribing:['Entendendo sua fala…','Transcribing…'],thinking:['Pensando na resposta…','Thinking…'],speaking:['Respondendo…','Speaking…'],error:['Confira o microfone','Check microphone']};
+    const labels:Record<VoicePhase,[string,string]>={off:['Microfone desligado','Microphone off'],starting:['Abrindo microfone…','Opening microphone…'],listening:['Microfone ligado · Estou ouvindo','Microphone on · Listening'],transcribing:['Entendendo sua fala…','Transcribing…'],thinking:['Pensando na resposta…','Thinking…'],speaking:['Respondendo…','Speaking…'],'audio-blocked':['Toque para ativar áudio','Tap to enable audio'],error:['Confira o microfone','Check microphone']};
     ctx.font='22px sans-serif';ctx.fillText(text(this.tutorLocale,...labels[this.voicePhase]),230,50);
     ctx.fillStyle='#383047';ctx.font='25px sans-serif';let line='',y=105;
     for(const word of caption.slice(0,450).split(/\s+/)){
@@ -191,7 +191,7 @@ export class World {
       line+=word+' ';if(y>330)break;
     }
     if(y<=330)ctx.fillText(line,40,y);
-    for(const [i,label]of [this.voicePhase==='off'||this.voicePhase==='error'?text(this.tutorLocale,'Ligar microfone','Turn microphone on'):text(this.tutorLocale,'Desligar microfone','Turn microphone off'),text(this.tutorLocale,'Pedir um movimento','Request a movement')].entries()){
+    for(const [i,label]of [this.voicePhase==='audio-blocked'?text(this.tutorLocale,'Ativar áudio','Enable audio'):this.voicePhase==='off'||this.voicePhase==='error'?text(this.tutorLocale,'Ligar microfone','Turn microphone on'):text(this.tutorLocale,'Desligar microfone','Turn microphone off'),text(this.tutorLocale,'Pedir um movimento','Request a movement')].entries()){
       ctx.fillStyle=i===0?'#7250cf':'#eed5b8';ctx.beginPath();ctx.roundRect(30+i*500,355,465,100,16);ctx.fill();
       ctx.fillStyle=i===0?'#ffffff':'#745239';ctx.font='600 24px sans-serif';ctx.fillText(label,50+i*500,414);
     }

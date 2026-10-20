@@ -2,7 +2,7 @@
  * ScratchXR — Continuous microphone capture with silence-delimited turns.
  * Subsistema: EDU. Depende de: browser audio APIs. Usado por: Dialogue.
  */
-export type VoicePhase='off'|'starting'|'listening'|'transcribing'|'thinking'|'speaking'|'error';
+export type VoicePhase='off'|'starting'|'listening'|'transcribing'|'thinking'|'speaking'|'audio-blocked'|'error';
 
 /** Kept separate from recording so timing and echo suppression can be checked. */
 export class SpeechBoundary{
@@ -36,14 +36,15 @@ export class VoiceCapture{
     // Called directly in the viewer's click gesture. Late permissions cannot revive a closed session.
     const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
     if(this.stopped){stream.getTracks().forEach(t=>t.stop());return;}
-    this.stream=stream;this.source=this.context.createMediaStreamSource(stream);
+    this.stream=stream;void this.context.resume().catch(()=>{});
+    this.source=this.context.createMediaStreamSource(stream);
     this.analyser=this.context.createAnalyser();this.analyser.fftSize=2048;this.source.connect(this.analyser);
     stream.getAudioTracks().forEach(track=>track.addEventListener('ended',()=>{if(!this.stopped){this.stop();this.onError();}}));
     this.record();
   }
   private record(){
     if(this.stopped||!this.stream)return;
-    const type=['audio/webm;codecs=opus','audio/mp4','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t));
+    const type=['audio/mp4','audio/webm;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t));
     const rec=new MediaRecorder(this.stream,type?{mimeType:type}:undefined),chunks:BlobPart[]=[];
     this.recorder=rec;this.boundary.reset();this.recordingSince=performance.now();let send=false;
     rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
@@ -53,6 +54,8 @@ export class VoiceCapture{
       if(this.stopped)return;
       try{if(send&&chunks.length)await this.onAudio(new Blob(chunks,{type:rec.mimeType}));}
       catch{if(!this.stopped){this.stop();this.onError();return;}}
+      // Keep the track open, without repeatedly restarting Safari's recorder during TTS.
+      while(!this.stopped&&this.suppressed())await new Promise(resolve=>setTimeout(resolve,100));
       if(!this.stopped)this.record();
     };
     const values=new Float32Array(this.analyser!.fftSize);

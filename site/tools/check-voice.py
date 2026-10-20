@@ -112,7 +112,7 @@ async def main():
         assert len(chats[1]) == len(chats[0]) + 2, "Conversation history lost between turns"
         assert len(stt_calls) == 2 and len(tts_avatars) == 3
         assert await page.evaluate("window.__micStreams[0].getAudioTracks()[0].readyState") == "live"
-        await panel.get_by_role("button", name="Sair do visor").click()
+        await page.get_by_role("button", name="Sair do visor").click()
         await page.wait_for_function("window.__micStreams.every(s=>s.getTracks().every(t=>t.readyState==='ended'))")
         print("CARDBOARD two automatic turns, history and microphone cleanup passed", flush=True)
 
@@ -124,7 +124,7 @@ async def main():
         await page.wait_for_timeout(700)
         await page.evaluate("window.__micGains.at(-1).gain.value=0")
         await page.wait_for_timeout(1250)
-        await panel.get_by_role("button", name="Sair do visor").click()
+        await page.get_by_role("button", name="Sair do visor").click()
         await page.wait_for_timeout(2200)
         assert len(chats) == 2, "Late transcription triggered a reply after leaving"
         # Simulated native session invokes the same synchronous audio start/end.
@@ -136,14 +136,14 @@ async def main():
         await page.evaluate("window.__pendingMic=true")
         await panel.get_by_role("button", name="Visor de celular", exact=True).click()
         await page.wait_for_function("!!window.__resolveMic")
-        await panel.get_by_role("button", name="Sair do visor").click()
+        await page.get_by_role("button", name="Sair do visor").click()
         await page.evaluate("window.__resolveMic()")
         await page.wait_for_function("window.__micStreams.length===4&&window.__micStreams.every(s=>s.getTracks().every(t=>t.readyState==='ended'))")
         await page.evaluate("window.__pendingMic=false;window.__denyMic=true")
         await panel.get_by_role("button", name="Visor de celular", exact=True).click()
         await expect(page.locator(".chat-notice")).to_contain_text("Confira a permissão")
         await expect(page.locator(".viewer-microphone")).to_have_text("Ligar microfone")
-        await panel.get_by_role("button", name="Sair do visor").click()
+        await page.get_by_role("button", name="Sair do visor").click()
         assert not errors, errors
         print("VR lifecycle, cancelled requests, late permissions and denial passed", flush=True)
         await browser.close()

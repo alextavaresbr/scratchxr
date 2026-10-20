@@ -3,6 +3,7 @@
  * Subsistema: EDU. Depende de: React, World. Usado por: App.
  */
 import {useEffect,useId,useLayoutEffect,useRef,useState,type ReactNode} from 'react';
+import {createPortal} from 'react-dom';
 import {Box,HelpCircle,Play,Glasses,Scan,Maximize,Mic,MicOff,Square,SlidersHorizontal,X} from 'lucide-react';
 import {World} from './World';
 import {text,type AvatarId,type Locale,type MotionData,type Trace} from './types';
@@ -16,7 +17,8 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
   onVoiceSession?:(active:boolean)=>void;voicePhase?:VoicePhase;
   stage?:ReactNode;stageActions?:ReactNode;busy?:boolean;
 }){
-  const host=useRef<HTMLDivElement>(null),world=useRef<World|null>(null);
+  const host=useRef<HTMLDivElement>(null),world=useRef<World|null>(null),inlineMount=useRef<HTMLDivElement>(null);
+  const [portalRoot]=useState(()=>{const root=document.createElement('div');root.style.display='contents';return root;});
   const panel=useRef<HTMLDivElement>(null),viewerButton=useRef<HTMLButtonElement>(null),exitButton=useRef<HTMLButtonElement>(null);
   const viewerActive=useRef(false),viewerRequest=useRef(0);
   const viewerScroll=useRef({x:0,y:0});
@@ -35,6 +37,8 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
   const replayComplete=useRef(onReplay);replayComplete.current=onReplay;
   const voiceSession=useRef(onVoiceSession);voiceSession.current=onVoiceSession;
   const unified=!!stage;
+  // Keep the same canvas and React tree when lifting the viewer out of the lesson.
+  useLayoutEffect(()=>{inlineMount.current?.appendChild(portalRoot);return()=>portalRoot.remove();},[portalRoot]);
   useLayoutEffect(()=>{
     if(!unified||!panel.current)return;
     const element=panel.current;
@@ -86,8 +90,18 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
   useLayoutEffect(()=>{
     if(!stereo||!panel.current)return;
     const element=panel.current,instance=world.current;
+    document.body.appendChild(portalRoot);
     const bodyOverflow=document.body.style.overflow,rootOverflow=document.documentElement.style.overflow;
     document.body.style.overflow='hidden';document.documentElement.style.overflow='hidden';
+    const viewport=window.visualViewport;
+    const sizeViewport=()=>{
+      element.style.setProperty('--viewer-width',`${viewport?.width??innerWidth}px`);
+      element.style.setProperty('--viewer-height',`${viewport?.height??innerHeight}px`);
+      element.style.setProperty('--viewer-left',`${viewport?.offsetLeft??0}px`);
+      element.style.setProperty('--viewer-top',`${viewport?.offsetTop??0}px`);
+    };
+    sizeViewport();viewport?.addEventListener('resize',sizeViewport);viewport?.addEventListener('scroll',sizeViewport);
+    window.addEventListener('resize',sizeViewport);
     let hadFullscreen=document.fullscreenElement===element;
     const fullscreenChanged=()=>{
       if(document.fullscreenElement===element)hadFullscreen=true;
@@ -110,8 +124,12 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
       viewerActive.current=false;const request=++viewerRequest.current;
       document.removeEventListener('fullscreenchange',fullscreenChanged);
       window.removeEventListener('keydown',keydown,true);
+      viewport?.removeEventListener('resize',sizeViewport);viewport?.removeEventListener('scroll',sizeViewport);
+      window.removeEventListener('resize',sizeViewport);
       document.body.style.overflow=bodyOverflow;document.documentElement.style.overflow=rootOverflow;
       instance?.exitStereo();
+      inlineMount.current?.appendChild(portalRoot);
+      for(const key of ['width','height','left','top'])element.style.removeProperty(`--viewer-${key}`);
       try{screen.orientation?.unlock?.();}catch{/* Not available in every browser. */}
       const position=viewerScroll.current;
       const restore=()=>{if(element.isConnected&&request===viewerRequest.current){
@@ -126,9 +144,10 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
     const element=panel.current,instance=world.current;
     if(!element||!instance||viewerActive.current)return;
     viewerScroll.current={x:window.scrollX,y:window.scrollY};
+    (document.activeElement as HTMLElement|null)?.blur?.();
+    document.body.appendChild(portalRoot);
     viewerActive.current=true;const request=++viewerRequest.current;
     setError('');setHelp(false);setShow3D(true);setTracking('loading');setStereo(true);
-    if(conversation)voiceSession.current?.(true);
     instance.setStereoAlignment(alignment);
     // Start both permission requests in the click gesture, before awaiting either.
     void instance.enterStereo(status=>{if(viewerActive.current&&request===viewerRequest.current)setTracking(status);});
@@ -146,6 +165,7 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
         }catch{/* Manual rotation still works. */}
       }
     })();
+    if(conversation)voiceSession.current?.(true);
   };
   const xr=async(mode:'immersive-ar'|'immersive-vr')=>{
     try{
@@ -171,7 +191,7 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
     <button className="icon-button" title={text(locale,'Parar reprodução','Stop replay')} disabled={!playing} onClick={()=>world.current?.stop()}><Square size={15}/></button>
     <button className="viewer-replay-button" disabled={!trace||playing} onClick={startReplay}><Play size={14}/>{text(locale,'Reproduzir','Replay')}</button>
   </div>;
-  return <div ref={panel} className={`world-panel ${stage?'unified-stage':''} ${show3D?'showing-3d':'showing-2d'} ${stereo?'stereo-active':''}`} role={stereo?'dialog':undefined} aria-modal={stereo?true:undefined} aria-label={stereo?text(locale,'Visor de celular','Phone viewer'):undefined}>
+  return <><div ref={inlineMount} className="viewer-mount"/>{createPortal(<div ref={panel} className={`world-panel ${stage?'unified-stage':''} ${show3D?'showing-3d':'showing-2d'} ${stereo?'stereo-active':''}`} role={stereo?'dialog':undefined} aria-modal={stereo?true:undefined} aria-label={stereo?text(locale,'Visor de celular','Phone viewer'):undefined}>
     <div className="world-toolbar"><span className="live-dot"/><span>{stage?text(locale,'Palco','Stage'):conversation?text(locale,'Uma conversa no seu mundo','A conversation in your world'):text(locale,'Seu programa ganhou espaço','Your program has room to move')}</span>
       {!stage&&replayControls}
       {conversation&&<button className={`icon-button conversation-mic ${voicePhase!=='off'&&voicePhase!=='error'?'active':''}`} aria-label={voicePhase==='off'||voicePhase==='error'?text(locale,'Ligar microfone','Turn microphone on'):text(locale,'Desligar microfone','Turn microphone off')} onClick={()=>onXRVoice?.('question')}>{voicePhase==='off'||voicePhase==='error'?<MicOff size={18}/>:<Mic size={18}/>}</button>}
@@ -182,7 +202,7 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
       <div ref={host} className="world-canvas" hidden={!show3D}/>
     </div>
     {stereo&&<button ref={exitButton} className="viewer-exit" onClick={closeViewer}><X size={20}/>{text(locale,'Sair do visor','Exit viewer')}</button>}
-    {stereo&&conversation&&<button className="viewer-microphone" onClick={()=>onXRVoice?.('question')}><Mic size={16}/>{voicePhase==='off'||voicePhase==='error'?text(locale,'Ligar microfone','Turn microphone on'):text(locale,'Microfone ligado','Microphone on')}</button>}
+    {stereo&&conversation&&<button className="viewer-microphone" onClick={()=>onXRVoice?.('question')}><Mic size={16}/>{voicePhase==='audio-blocked'?text(locale,'Ativar áudio','Enable audio'):voicePhase==='off'||voicePhase==='error'?text(locale,'Ligar microfone','Turn microphone on'):text(locale,'Microfone ligado','Microphone on')}</button>}
     {stereo&&<button className="viewer-align-toggle" aria-expanded={aligning} onClick={()=>setAligning(value=>!value)}><SlidersHorizontal size={18}/>{text(locale,'Alinhar imagens','Align images')}</button>}
     {stereo&&aligning&&<div className="viewer-alignment"><label>{text(locale,'Ajuste até unir as duas imagens no visor.','Adjust until the two images merge in the viewer.')}
       <input aria-label={text(locale,'Alinhamento das imagens','Image alignment')} type="range" min={-.2} max={.2} step={.002} value={alignment} onChange={event=>{
@@ -202,5 +222,5 @@ export function WorldView({locale,avatar,scene,trace,gesture,speaking,onReplay,o
       {stage&&<div className="mini-challenge"><span>✦ {text(locale,'EXPERIMENTE','TRY THIS')}</span><p>{text(locale,'No bloco “deslize”, mude 2 para 1. O destino mudou ou só a velocidade?','In the “glide” block, change 2 to 1. Did the destination change, or just the speed?')}</p></div>}
     </aside>}
     <p className="tracking-credit"><a href="/xr8/LICENSE" target="_blank" rel="noreferrer">{text(locale,'Licença e isenção de garantias','License and warranty disclaimer')}</a></p>
-  </div>;
+  </div>,portalRoot)}</>;
 }

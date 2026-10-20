@@ -33,16 +33,24 @@ Chaves são lidas no servidor a partir do `.env` do workspace ou de
 Veja `.env.example`. Haiku responde; Voxtral transcreve e sintetiza.
 O Voxtral usa referências do Logvesp, incluídas em `voices/`: Emily/Luna,
 Ryan/Leo e Lola/Maya. Os IDs `SCRATCHXR_VOICE_PT`/`SCRATCHXR_VOICE_EN` são
-substituições opcionais. Sem Mistral, tenta a síntese do navegador.
+substituições opcionais. Falhas de TTS mantêm a resposta em texto e exibem
+um aviso; não há substituição automática pela voz do sistema.
 As três vozes e uma transcrição em português foram verificadas na API.
 Na conversa VR/Cardboard, `voiceCapture.ts` mantém o microfone aberto,
 delimita falas por silêncio e descarta áudio enquanto o tutor responde.
 O áudio usa um AudioContext liberado no clique, inclusive no celular.
-O formato enviado à transcrição acompanha WebM/MP4 do navegador.
+Uma interrupção mantém a voz decodificada pendente até “Ativar áudio”;
+esse botão retoma o contexto sem desligar o microfone. Durante a resposta,
+o track fica aberto sem reiniciar o MediaRecorder repetidamente.
+O formato enviado à transcrição prioriza MP4 e aceita WebM conforme o navegador.
 Saída, erro e permissões tardias encerram os tracks; o indicador e o botão
 de microfone ficam disponíveis na web, no Cardboard e no painel XR.
 `python tools/check-voice.py` verifica texto, captura e ciclo de vida com
 microfone sintético; testes acústicos no iPhone e Quest continuam necessários.
+`python tools/check-safari.py` confere viewport e rolagem em WebKit/Chromium,
+além de decodificação e retomada de áudio com interrupções controladas no
+Chromium. A distribuição WebKit para Windows não inclui Web Audio/MediaRecorder.
+“Ver meu movimento” rola imediatamente até o avatar da conversa.
 
 Kimodo foi reinstalado em `D:/kimodo`, com `kmd-generate.exe` compilado
 para CPU em `repo/build/win-cpu`. Commit:
@@ -166,6 +174,9 @@ atrasados e restaura o enquadramento e a rolagem.
 Ao abrir, a cena ocupa toda a área da página e solicita
 tela cheia nativa e orientação horizontal. Se o navegador recusar essas
 APIs, mantém a cena expandida e permite girar o aparelho manualmente.
+Um portal leva o mesmo canvas para o `body`, fora das restrições de tamanho
+da seção. Suas dimensões acompanham o `visualViewport`, inclusive ao fechar
+o teclado ou girar o aparelho; a saída devolve o canvas ao lugar original.
 Sem sensores, a exploração por arraste continua disponível. O botão
 “Sair do visor”, Escape e a saída nativa restauram a apresentação normal.
 Isso vale tanto para o resultado 3D quanto para o avatar do diálogo.

@@ -1,7 +1,9 @@
 # Parecer e primeira implementação do ScratchXR
 
 20/10/2026 — requisitos revisados e primeira versão local em execução.
-Prévia: https://localhost:4310. Instruções em [site/README.md](site/README.md).
+Prévia local: https://localhost:4310.
+Site publicado: https://scratchxr-production.up.railway.app/.
+Instruções em [site/README.md](site/README.md).
 
 ## Produção e verificação realizadas
 
@@ -11,6 +13,19 @@ Prévia: https://localhost:4310. Instruções em [site/README.md](site/README.md
   O servidor também entrega GLB/WASM/PDF com MIME e ranges apropriados.
   Kimodo e seus pesos não acompanham a imagem; sem instalação Linux,
   os pedidos de movimento usam o gesto pronto. Há CI de testes/build/Docker.
+- O serviço Railway estava sem as chaves de tutor, STT e TTS. As variáveis
+  foram configuradas somente no serviço. Falhas de voz agora preservam
+  o texto e mostram um aviso, sem substituição pela voz mecânica do sistema.
+  Áudio interrompido pode ser retomado por “Ativar áudio”, sem desligar
+  o microfone. O MP4 é priorizado na captura quando suportado.
+- Cardboard usa um portal no `body` e acompanha o `visualViewport`,
+  preservando o canvas ao entrar e sair. “Ver meu movimento” rola até
+  o avatar automaticamente. Permissões e áudio acústico no iPhone físico
+  ainda precisam de conferência.
+- Validação local: build, 30 testes unitários, percurso completo nos três
+  cenários e conversa com duas falas automáticas passaram. Viewport e
+  retorno ao avatar passaram em WebKit/Chromium; a recuperação de áudio
+  e manutenção do microfone passaram com interrupções controladas no Chromium.
 - A validação de origem aceita o cabeçalho `:authority` do HTTP/2 usado no
   HTTPS local, corrigindo o erro 403 que impedia a conversa no navegador.
   Origem externa continua recusada. Avisos de falha ficam junto ao chat.
@@ -149,7 +164,7 @@ Prévia: https://localhost:4310. Instruções em [site/README.md](site/README.md
 - Tutor Haiku e Voxtral com chaves no servidor. O TTS usa samples do Logvesp:
   Luna/Emily, Leo/Ryan, Maya/Lola; as três sínteses e a transcrição em
   português foram verificadas na API. IDs de voz são substituições opcionais.
-  Sem serviço, há resposta educativa local e tentativa de voz do navegador.
+  Sem serviço, há resposta educativa local em texto e aviso de voz indisponível.
   Na conversa imersiva o microfone começa ao entrar, mediante permissão,
   envia a fala após um segundo de pausa e retoma após a resposta.
   A captura para ao sair/desligar; áudio do próprio tutor é descartado.

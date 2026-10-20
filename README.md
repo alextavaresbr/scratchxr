@@ -34,7 +34,8 @@ prefixo `VITE_`. O arquivo [site/.env.example](site/.env.example) contém
 apenas nomes e valores vazios.
 
 O site abre sem essas variáveis. Nesse caso o tutor oferece uma explicação
-local e a síntese de voz usa os recursos disponíveis no navegador.
+local por texto. Falhas de síntese são informadas, sem trocar automaticamente
+a voz do personagem pela voz do sistema.
 
 As referências do Logvesp ficam em `site/voices`: Emily para Luna, Ryan para
 Leo e Lola para Maya. O servidor escolhe pelo personagem; nenhum cadastro
@@ -43,6 +44,9 @@ transferidas para o Railway**: configure-as no painel do serviço.
 No diálogo VR/Cardboard, a permissão do microfone é solicitada ao entrar.
 A fala é enviada após uma pausa e a escuta retoma depois da resposta.
 Sair do visor ou desligar o ícone encerra a captura. Sem permissão, use texto.
+Se o navegador interromper o áudio, “Ativar áudio” retoma a reprodução
+sem desligar o microfone. O Cardboard acompanha a área visível do navegador,
+inclusive ao girar o celular; ocultar as barras depende da API de tela cheia.
 
 **Kimodo é opcional e não está instalado na imagem Docker.** A instalação
 Windows do workspace não acompanha o deploy. Sem executável e pesos no

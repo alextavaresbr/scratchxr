@@ -225,7 +225,9 @@ footer>.age-note{line-height:2}
 }
 
 /* Fill the viewport even when the browser cannot grant native fullscreen. */
-.world-panel.stereo-active{position:fixed;inset:0;z-index:1000;width:100%;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:#000;box-shadow:none;overscroll-behavior:none}
+.viewer-mount{display:contents}
+.world-panel.stereo-active{position:fixed;inset:auto;left:var(--viewer-left,0);top:var(--viewer-top,0);z-index:1000;width:var(--viewer-width,100vw);height:var(--viewer-height,100dvh);max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:#000;box-shadow:none;overscroll-behavior:none}
+.world-panel.stereo-active .stage-surface{position:absolute;inset:0;width:100%;height:100%}
 .world-panel.stereo-active .world-canvas{position:absolute;inset:0;width:100%;height:100%}
 .world-panel.stereo-active .world-toolbar,.world-panel.stereo-active .world-hint,.world-panel.stereo-active .xr-controls,.world-panel.stereo-active .compatibility,.world-panel.stereo-active .notice,.world-panel.stereo-active .world-bubble{display:none}
 .viewer-exit{position:absolute;z-index:1;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));display:flex;align-items:center;gap:7px;min-height:44px;padding:10px 14px;border:1px solid #ffffff50;border-radius:10px;background:#35284fe6;color:white;font-size:12px;font-weight:600}
@@ -250,4 +252,6 @@ footer>.age-note{line-height:2}
 .conversation-mic.active{color:#fff;background:var(--purple)}
 .chat-voice-status{margin:12px 22px 0;color:var(--purple);font-size:11px}
 .chat-notice{margin:12px 18px}
+.chat-audio-enable{margin:0 18px 12px}
+.conversation-world{scroll-margin-top:20px}
 .viewer-microphone{position:absolute;z-index:2;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));display:flex;align-items:center;gap:7px;padding:10px 12px;border-radius:10px;background:#7250cf;color:#fff;font-size:12px}
